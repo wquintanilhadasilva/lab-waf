@@ -7,7 +7,8 @@ RUN apt-get update && \
     build-essential \
     wget \
     libmodsecurity-dev \
-    libpcre3-dev
+    libpcre3-dev \
+    git
 
 FROM nginx-base as websecurity
 # Baixa o código-fonte do ModSecurity
@@ -21,10 +22,11 @@ RUN cd modsecurity-v3.0.4 && \
     make install
 
 FROM websecurity as owasp
+
 # Baixa o conjunto básico de regras do ModSecurity
 RUN git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /usr/src/owasp-modsecurity-crs && \
     cd /usr/src/owasp-modsecurity-crs && \
-    git checkout v3.3.2 && \
+    git checkout v3.2.0 && \
     mv crs-setup.conf.example crs-setup.conf
 
 FROM owasp
@@ -33,6 +35,9 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copia o arquivo de configuração do ModSecurity
 COPY modsecurity.conf /etc/nginx/modsecurity/modsecurity.conf
+
+# Copia o arquivo de configuração do ModSecurity
+COPY modules.conf /etc/nginx/modules.conf
 
 # Configura o diretório para as regras do ModSecurity
 RUN mkdir -p /etc/nginx/modsecurity.d && \
