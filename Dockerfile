@@ -21,6 +21,9 @@ RUN cd modsecurity-v3.0.4 && \
     make && \
     make install
 
+# RUN cp /usr/local/modsecurity/lib/libmodsecurity.so /etc/nginx/modules
+# cp /usr/src/modsecurity-v3.0.4/ngx_http_modsecurity_module.so /etc/nginx/modules/
+
 FROM websecurity as owasp
 
 # Baixa o conjunto básico de regras do ModSecurity
@@ -45,10 +48,10 @@ RUN mkdir -p /etc/nginx/modsecurity.d && \
     echo "Include /usr/src/owasp-modsecurity-crs/rules/*.conf" >> /etc/nginx/modsecurity.d/owasp-modsecurity-crs-base.conf
 
 # Remove o código-fonte e outras dependências não mais necessárias
-RUN rm -rf modsecurity-3.0.4 modsecurity-3.0.4.tar.gz && \
-    apt-get purge -y build-essential wget && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
+# RUN rm -rf modsecurity-3.0.4 modsecurity-3.0.4.tar.gz && \
+#     apt-get purge -y build-essential wget && \
+#     apt-get autoremove -y && \
+#     rm -rf /var/lib/apt/lists/*
 
 # Expõe a porta 80
 EXPOSE 80
